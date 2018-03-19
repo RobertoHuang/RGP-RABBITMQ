@@ -30,7 +30,7 @@ import java.util.concurrent.TimeoutException;
 public class MessageProducer {
     public static void main(String[] args) throws IOException, TimeoutException {
         Channel channel = ChannelUtils.getChannel("RGP订单系统消息生产者");
-        channel.exchangeDeclare("roberto.order", BuiltinExchangeType.TOPIC, true, false, false, new HashMap<>());
+        channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, new HashMap<>());
         for(int i=1;i<=10;i++) {
             AMQP.BasicProperties basicProperties = new AMQP.BasicProperties().builder().deliveryMode(2).contentType("UTF-8").priority(i).build();
             channel.basicPublish("roberto.order", "add", true, basicProperties, ("订单消息信息"+i).getBytes());

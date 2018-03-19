@@ -29,7 +29,7 @@ import java.util.concurrent.TimeoutException;
 public class MessageConsumer {
     public static void main(String[] args) throws IOException, TimeoutException {
         Channel channel = ChannelUtils.getChannel("RGP订单系统消息消费者");
-        channel.exchangeDeclare("roberto.order", BuiltinExchangeType.TOPIC, true, false, false, new HashMap<>());
+        channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, new HashMap<>());
 
         // 将roberto.order.add队列绑定到roberto.order交换机上 routing key为add
         Map<String, Object> queueProperties = new HashMap<>();

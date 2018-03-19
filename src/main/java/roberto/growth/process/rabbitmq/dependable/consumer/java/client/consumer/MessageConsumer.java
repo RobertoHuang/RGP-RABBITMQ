@@ -30,9 +30,7 @@ public class MessageConsumer {
         Channel channel = ChannelUtils.getChannelInstance("RGP订单系统消息消费者");
 
         AMQP.Queue.DeclareOk declareOk = channel.queueDeclare("roberto.order.add", true, false, false, new HashMap<>());
-
         channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, new HashMap<>());
-
         channel.queueBind(declareOk.getQueue(), "roberto.order", "add", new HashMap<>());
 
         channel.basicConsume(declareOk.getQueue(), false, "RGP订单系统ADD处理逻辑消费者", new DefaultConsumer(channel) {

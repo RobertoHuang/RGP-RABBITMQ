@@ -69,6 +69,7 @@ public class SpringAMQPProducerConfig {
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+
         // 设置RabbitTemplate的Mandatory属性为true
         rabbitTemplate.setMandatory(true);
         // 为RabbitTemplate设置ReturnCallback
@@ -87,6 +88,7 @@ public class SpringAMQPProducerConfig {
                 }
             }
         });
+
         // 为RabbitTemplate设置ConfirmCallback
         rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
             @Override

@@ -10,15 +10,8 @@
  */
 package roberto.growth.process.rabbitmq.dependable.deliver.spring.amqp.consumer;
 
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-
-import java.util.HashMap;
 
 /**
  * 〈一句话功能简述〉<br> 
@@ -31,17 +24,6 @@ import java.util.HashMap;
 @ComponentScan(basePackages = "roberto.growth.process.rabbitmq.dependable.deliver.spring.amqp.consumer")
 public class ConsumerApplication {
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConsumerApplication.class);
-
-        RabbitAdmin rabbitAdmin = context.getBean(RabbitAdmin.class);
-        MessageListenerContainer messageListenerContainer = context.getBean(MessageListenerContainer.class);
-
-        rabbitAdmin.declareQueue(new Queue("roberto.order.add", true, false, false, new HashMap<>()));
-
-        rabbitAdmin.declareExchange(new DirectExchange("roberto.order", true, false, new HashMap<>()));
-
-        rabbitAdmin.declareBinding(BindingBuilder.bind(new Queue("roberto.order.add")).to(new DirectExchange("roberto.order")).with("add"));
-
-        messageListenerContainer.start();
+        new AnnotationConfigApplicationContext(ConsumerApplication.class);
     }
 }

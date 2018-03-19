@@ -34,7 +34,6 @@ public class MessageProducer {
         channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, new HashMap<>());
 
         AMQP.BasicProperties basicProperties = new AMQP.BasicProperties().builder().deliveryMode(2).contentType("UTF-8").build();
-
         channel.basicPublish("roberto.order", "add", false, basicProperties, "订单信息".getBytes());
         channel.basicPublish("roberto.order", "add", false, basicProperties, "订单信息2".getBytes());
     }

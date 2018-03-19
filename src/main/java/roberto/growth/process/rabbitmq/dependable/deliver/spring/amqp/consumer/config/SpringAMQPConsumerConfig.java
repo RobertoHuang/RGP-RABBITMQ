@@ -10,8 +10,7 @@
  */
 package roberto.growth.process.rabbitmq.dependable.deliver.spring.amqp.consumer.config;
 
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageListener;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -25,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈SpringAMQP消费者配置类〉
  *
  * @author HuangTaiHong
@@ -63,6 +62,21 @@ public class SpringAMQPConsumerConfig {
     }
 
     @Bean
+    public Queue queue() {
+        return new Queue("roberto.order.add", true, false, false, new HashMap<>());
+    }
+
+    @Bean
+    public Exchange exchange() {
+        return new DirectExchange("roberto.order", true, false, new HashMap<>());
+    }
+
+    @Bean
+    public Binding binding() {
+        return BindingBuilder.bind(new Queue("roberto.order.add")).to(new DirectExchange("roberto.order")).with("add");
+    }
+
+    @Bean
     public MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer messageListenerContainer = new SimpleMessageListenerContainer();
         messageListenerContainer.setConnectionFactory(connectionFactory);
@@ -81,7 +95,6 @@ public class SpringAMQPConsumerConfig {
             }
         });
 
-        messageListenerContainer.setAutoStartup(false);
         messageListenerContainer.setMessageListener(new MessageListener() {
             @Override
             public void onMessage(Message message) {

@@ -11,8 +11,7 @@
 package roberto.growth.process.rabbitmq.dependable.consumer.spring.amqp.consumer.config;
 
 import com.rabbitmq.client.Channel;
-import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
@@ -65,6 +64,21 @@ public class SpringAMQPConsumerConfig {
     }
 
     @Bean
+    public Queue queue() {
+        return new Queue("roberto.order.add", true, false, false, new HashMap<>());
+    }
+
+    @Bean
+    public Exchange exchange() {
+        return new DirectExchange("roberto.order", true, false, new HashMap<>());
+    }
+
+    @Bean
+    public Binding binding() {
+        return BindingBuilder.bind(new Queue("roberto.order.add")).to(new DirectExchange("roberto.order")).with("add");
+    }
+
+    @Bean
     public MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer messageListenerContainer = new SimpleMessageListenerContainer();
         messageListenerContainer.setConnectionFactory(connectionFactory);
@@ -83,7 +97,8 @@ public class SpringAMQPConsumerConfig {
             }
         });
 
-        messageListenerContainer.setAutoStartup(false);
+        // 设置消息确认模式为手动模式
+        messageListenerContainer.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         messageListenerContainer.setMessageListener(new ChannelAwareMessageListener() {
             @Override
             public void onMessage(Message message, Channel channel) throws Exception {
@@ -100,8 +115,7 @@ public class SpringAMQPConsumerConfig {
                 }
             }
         });
-        // 设置消息确认模式为手动模式
-        messageListenerContainer.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+
         return messageListenerContainer;
     }
 }
