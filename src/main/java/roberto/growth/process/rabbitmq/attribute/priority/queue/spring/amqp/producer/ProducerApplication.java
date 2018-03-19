@@ -37,7 +37,6 @@ public class ProducerApplication {
 
         RabbitAdmin rabbitAdmin = context.getBean(RabbitAdmin.class);
         RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
-
         rabbitAdmin.declareExchange(new DirectExchange("roberto.order", true, false, new HashMap<>()));
 
         for (int i = 1; i <= 10; i++) {

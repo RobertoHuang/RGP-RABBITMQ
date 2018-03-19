@@ -20,20 +20,21 @@ import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈消息生产者〉
  *
  * @author HuangTaiHong
- * @create 2018-03-19 
+ * @create 2018-03-19
  * @since 1.0.0
  */
 public class MessageProducer {
     public static void main(String[] args) throws IOException, TimeoutException {
         Channel channel = ChannelUtils.getChannel("RGP订单系统消息生产者");
         channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, new HashMap<>());
-        for(int i=1;i<=10;i++) {
+        for (int i = 1; i <= 10; i++) {
+            // 发送消息时使用priority()方法指定消息优先级
             AMQP.BasicProperties basicProperties = new AMQP.BasicProperties().builder().deliveryMode(2).contentType("UTF-8").priority(i).build();
-            channel.basicPublish("roberto.order", "add", true, basicProperties, ("订单消息信息"+i).getBytes());
+            channel.basicPublish("roberto.order", "add", true, basicProperties, ("订单消息信息" + i).getBytes());
         }
     }
 }

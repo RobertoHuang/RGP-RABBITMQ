@@ -32,13 +32,12 @@ public class MessageConsumer {
 
         // 声明Dead Letter Exchange
         channel.exchangeDeclare("roberto.order.failure", BuiltinExchangeType.FANOUT, true, false, false, new HashMap<>());
-        channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, new HashMap<>());
 
         // 声明队列并 指定x-dead-letter-exchange
         Map<String, Object> queueProperties = new HashMap<>();
         queueProperties.put("x-dead-letter-exchange","roberto.order.failure");
         AMQP.Queue.DeclareOk declareOk = channel.queueDeclare("roberto.order.add", true, false, false, queueProperties);
-
+        channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, new HashMap<>());
         channel.queueBind(declareOk.getQueue(), "roberto.order", "add", new HashMap<>());
 
         // 将roberto.order.add.failure队列绑定到roberto.order.failure交换机上 无需指定routing key

@@ -10,8 +10,7 @@
  */
 package roberto.growth.process.rabbitmq.attribute.priority.queue.spring.amqp.consumer.config;
 
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageListener;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -63,6 +62,24 @@ public class SpringAMQPConsumerConfig {
     }
 
     @Bean
+    public Queue queue() {
+        // 创建队列时设置队列最大优先级
+        Map<String, Object> queueProperties = new HashMap<>();
+        queueProperties.put("x-max-priority", 10);
+        return new Queue("roberto.order.add", true, false, false, queueProperties);
+    }
+
+    @Bean
+    public Exchange exchange() {
+        return new DirectExchange("roberto.order", true, false, new HashMap<>());
+    }
+
+    @Bean
+    public Binding binding() {
+        return BindingBuilder.bind(new Queue("roberto.order.add")).to(new DirectExchange("roberto.order")).with("add");
+    }
+
+    @Bean
     public MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer messageListenerContainer = new SimpleMessageListenerContainer();
         messageListenerContainer.setConnectionFactory(connectionFactory);
@@ -90,7 +107,6 @@ public class SpringAMQPConsumerConfig {
                 }
             }
         });
-        messageListenerContainer.setAutoStartup(false);
         return messageListenerContainer;
     }
 }

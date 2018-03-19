@@ -29,12 +29,12 @@ import java.util.concurrent.TimeoutException;
 public class MessageConsumer {
     public static void main(String[] args) throws IOException, TimeoutException {
         Channel channel = ChannelUtils.getChannel("RGP订单系统消息消费者");
-        channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, new HashMap<>());
 
-        // 将roberto.order.add队列绑定到roberto.order交换机上 routing key为add
+        // 创建队列时设置队列最大优先级
         Map<String, Object> queueProperties = new HashMap<>();
         queueProperties.put("x-max-priority", 10);
         AMQP.Queue.DeclareOk declareOk = channel.queueDeclare("roberto.order.add", true, false, false, queueProperties);
+        channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, new HashMap<>());
         channel.queueBind(declareOk.getQueue(), "roberto.order", "add", new HashMap<>());
 
         // 消费roberto.order.add队列

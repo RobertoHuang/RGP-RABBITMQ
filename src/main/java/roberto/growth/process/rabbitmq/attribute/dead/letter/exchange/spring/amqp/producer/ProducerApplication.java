@@ -35,17 +35,14 @@ public class ProducerApplication {
         RabbitAdmin rabbitAdmin = context.getBean(RabbitAdmin.class);
         RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
 
-        // 声明AE 类型为Fanout
-        rabbitAdmin.declareExchange(new FanoutExchange("roberto.order.failure", true, false, new HashMap<>()));
-
-        // 为roberto.order设置AE
         rabbitAdmin.declareExchange(new DirectExchange("roberto.order", true, false, new HashMap<>()));
+        // 声明Dead Letter Exchange
+        rabbitAdmin.declareExchange(new FanoutExchange("roberto.order.failure", true, false, new HashMap<>()));
 
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
         messageProperties.setContentType("UTF-8");
         Message message = new Message("订单信息".getBytes(), messageProperties);
-
         rabbitTemplate.send("roberto.order", "add", message, new CorrelationData("201210704116"));
     }
 }
