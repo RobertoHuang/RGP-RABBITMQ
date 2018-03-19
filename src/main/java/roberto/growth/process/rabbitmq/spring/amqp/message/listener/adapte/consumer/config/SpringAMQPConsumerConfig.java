@@ -97,8 +97,6 @@ public class SpringAMQPConsumerConfig {
             }
         });
 
-        messageListenerContainer.setAutoStartup(true);
-
         // 新建消息处理器适配器
         MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageHandle());
         // 设置默认处理消息方法

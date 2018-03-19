@@ -103,8 +103,6 @@ public class SpringAMQPConsumerConfig {
             }
         });
 
-        messageListenerContainer.setAutoStartup(true);
-
         MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageHandle());
         messageListenerAdapter.setDefaultListenerMethod("handleMessage");
         Map<String, String> queueOrTagToMethodName = new HashMap<>();
