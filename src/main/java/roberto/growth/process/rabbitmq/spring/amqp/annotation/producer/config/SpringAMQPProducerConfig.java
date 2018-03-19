@@ -33,19 +33,15 @@ public class SpringAMQPProducerConfig {
     public org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory() {
         com.rabbitmq.client.ConnectionFactory connectionFactory = new com.rabbitmq.client.ConnectionFactory();
 
-        // 配置连接信息
         connectionFactory.setHost("192.168.56.128");
         connectionFactory.setPort(5672);
         connectionFactory.setVirtualHost("/");
         connectionFactory.setUsername("roberto");
         connectionFactory.setPassword("roberto");
 
-        // 网络异常自动连接恢复
         connectionFactory.setAutomaticRecoveryEnabled(true);
-        // 每10秒尝试重试连接一次
         connectionFactory.setNetworkRecoveryInterval(10000);
 
-        // 设置ConnectionFactory属性信息
         Map<String, Object> connectionFactoryPropertiesMap = new HashMap();
         connectionFactoryPropertiesMap.put("principal", "RobertoHuang");
         connectionFactoryPropertiesMap.put("description", "RGP订单系统V2.0");

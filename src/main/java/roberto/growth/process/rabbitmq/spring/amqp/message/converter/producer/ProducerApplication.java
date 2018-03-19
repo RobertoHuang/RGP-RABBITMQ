@@ -42,6 +42,7 @@ import java.util.Map;
 public class ProducerApplication {
     public static void main(String[] args) throws Exception {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ProducerApplication.class);
+
         RabbitAdmin rabbitAdmin = context.getBean(RabbitAdmin.class);
         RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
 
