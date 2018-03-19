@@ -61,7 +61,7 @@ public class ChannelUtils {
             @Override
             public void handleConsumerException(Channel channel, Throwable exception, Consumer consumer, String consumerTag, String methodName) {
                 System.out.println("----------消息消费异常处理----------");
-                System.out.println("消息消费异常日志记录" + exception.getMessage());
+                System.out.println("消息消费异常日志记录:" + exception.getMessage());
                 super.handleConsumerException(channel, exception, consumer, consumerTag, methodName);
             }
         });
