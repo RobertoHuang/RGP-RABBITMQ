@@ -13,7 +13,7 @@ package roberto.growth.process.rabbitmq.attribute.alternate.exchange.java.client
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
-import roberto.growth.process.rabbitmq.dependable.consumer.java.client.utils.ChannelUtils;
+import roberto.growth.process.rabbitmq.attribute.alternate.exchange.java.client.utils.ChannelUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,9 +39,8 @@ public class MessageProducer {
         exchangeProperties.put("alternate-exchange", "roberto.order.failure");
         channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, exchangeProperties);
 
-        AMQP.BasicProperties basicProperties = new AMQP.BasicProperties().builder().deliveryMode(2).contentType("UTF-8").build();
-
         // 发送一条不能正确路由的消息
+        AMQP.BasicProperties basicProperties = new AMQP.BasicProperties().builder().deliveryMode(2).contentType("UTF-8").build();
         channel.basicPublish("roberto.order", "addXXX", false, basicProperties, "订单信息".getBytes());
     }
 }

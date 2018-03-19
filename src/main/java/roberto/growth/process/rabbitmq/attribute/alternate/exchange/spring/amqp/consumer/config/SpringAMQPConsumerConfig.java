@@ -10,8 +10,7 @@
  */
 package roberto.growth.process.rabbitmq.attribute.alternate.exchange.spring.amqp.consumer.config;
 
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageListener;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -21,15 +20,17 @@ import org.springframework.amqp.support.ConsumerTagStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈SpringAMQP消费者配置类〉
  *
  * @author HuangTaiHong
- * @create 2018-03-19 
+ * @create 2018-03-19
  * @since 1.0.0
  */
 @Configuration
@@ -63,6 +64,30 @@ public class SpringAMQPConsumerConfig {
     }
 
     @Bean
+    public List<Queue> queueList() {
+        Queue queue = new Queue("roberto.order.add", true, false, false, new HashMap<>());
+        Queue queue2 = new Queue("roberto.order.add.failure", true, false, false, new HashMap<>());
+        return Arrays.asList(queue, queue2);
+    }
+
+    @Bean
+    public List<Exchange> exchangeList() {
+        // 声明AE 类型为Fanout
+        FanoutExchange fanoutExchange = new FanoutExchange("roberto.order.failure", true, false, new HashMap<>());
+        Map<String, Object> exchangeProperties = new HashMap<>();
+        exchangeProperties.put("alternate-exchange", "roberto.order.failure");
+        DirectExchange directExchange = new DirectExchange("roberto.order", true, false, exchangeProperties);
+        return Arrays.asList(fanoutExchange, directExchange);
+    }
+
+    @Bean
+    public List<Binding> bindingList() {
+        Binding binding = BindingBuilder.bind(new Queue("roberto.order.add")).to(new DirectExchange("roberto.order")).with("add");
+        Binding binding2 = BindingBuilder.bind(new Queue("roberto.order.add.failure")).to(new DirectExchange("roberto.order.failure")).with("");
+        return Arrays.asList(binding, binding2);
+    }
+
+    @Bean
     public MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer messageListenerContainer = new SimpleMessageListenerContainer();
         messageListenerContainer.setConnectionFactory(connectionFactory);
@@ -91,7 +116,6 @@ public class SpringAMQPConsumerConfig {
                 }
             }
         });
-        messageListenerContainer.setAutoStartup(false);
         return messageListenerContainer;
     }
 
@@ -124,7 +148,6 @@ public class SpringAMQPConsumerConfig {
                 }
             }
         });
-        messageListenerContainer.setAutoStartup(false);
         return messageListenerContainer;
     }
 }

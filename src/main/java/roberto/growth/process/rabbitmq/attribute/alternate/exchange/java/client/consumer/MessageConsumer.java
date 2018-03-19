@@ -31,14 +31,12 @@ public class MessageConsumer {
         Channel channel = ChannelUtils.getChannelInstance("RGP订单系统消息消费者");
 
         AMQP.Queue.DeclareOk declareOk = channel.queueDeclare("roberto.order.add", true, false, false, new HashMap<>());
-
         // 声明AE 类型为Fanout
         channel.exchangeDeclare("roberto.order.failure", BuiltinExchangeType.FANOUT, true, false, false, new HashMap<>());
         // 为roberto.order设置AE
         Map<String, Object> exchangeProperties = new HashMap<>();
         exchangeProperties.put("alternate-exchange", "roberto.order.failure");
         channel.exchangeDeclare("roberto.order", BuiltinExchangeType.DIRECT, true, false, false, exchangeProperties);
-
         channel.queueBind(declareOk.getQueue(), "roberto.order", "add", new HashMap<>());
 
         // 将roberto.order.add.failure队列绑定到roberto.order.failure交换机上 无需指定routing key
